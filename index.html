@@ -1,0 +1,457 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Little Something For You | Shree</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --rose-bg-1: #f7dcdb;
+            --rose-bg-2: #f2c7c2;
+            --rose-bg-3: #e8b0a9;
+            --rose-bg-4: #df9e99;
+            --rose-edge: #ba6f6d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f7dcdb;
+        }
+
+        /* Subtle living ambient background gradient */
+        .luxury-gradient {
+            background: radial-gradient(circle at 50% 45%, #fff2f0 0%, #f7dcdb 28%, #f0c5c0 58%, #dfa09a 85%, #cf837f 100%);
+            background-size: 140% 140%;
+            animation: slowGradientShift 18s ease-in-out infinite alternate;
+        }
+
+        @keyframes slowGradientShift {
+            0% {
+                background-position: 48% 46%;
+                filter: brightness(1) saturate(1);
+            }
+            50% {
+                background-position: 52% 54%;
+                filter: brightness(1.02) saturate(1.04);
+            }
+            100% {
+                background-position: 50% 48%;
+                filter: brightness(0.99) saturate(0.98);
+            }
+        }
+
+        /* Subtle film grain texture overlay */
+        .paper-grain {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0.18;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.7'/%3E%3C/svg%3E");
+            mix-blend-mode: overlay;
+        }
+
+        /* Glassmorphic button aesthetics */
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.28);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.65);
+            box-shadow: 
+                0 10px 30px rgba(186, 111, 109, 0.18),
+                0 2px 10px rgba(255, 255, 255, 0.5) inset,
+                0 -2px 6px rgba(186, 111, 109, 0.12) inset;
+            transition: transform 0.38s cubic-bezier(0.2, 0.8, 0.2, 1),
+                        background-color 0.38s ease,
+                        box-shadow 0.38s ease,
+                        border-color 0.38s ease;
+            cursor: pointer;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .glass-btn:hover {
+                transform: translateY(-4px) scale(1.02);
+                background: rgba(255, 255, 255, 0.42);
+                border-color: rgba(255, 255, 255, 0.9);
+                box-shadow: 
+                    0 16px 36px rgba(186, 111, 109, 0.24),
+                    0 3px 12px rgba(255, 255, 255, 0.7) inset,
+                    0 -2px 8px rgba(186, 111, 109, 0.14) inset;
+            }
+        }
+
+        .glass-btn:active {
+            transform: translateY(1px) scale(0.92) !important;
+            transition-duration: 0.1s;
+        }
+
+        /* Compression triggered state */
+        .btn-compress {
+            animation: quickCompress 0.22s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+
+        @keyframes quickCompress {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.88); }
+            100% { transform: scale(1); }
+        }
+
+        /* Font Serif Class */
+        .serif-font {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+        }
+
+        /* Tear Rip Layer Styles */
+        .paper-layer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            will-change: transform, clip-path;
+        }
+
+        /* SVG Torn Paper Masks */
+        .tear-left-half {
+            filter: drop-shadow(4px 0px 14px rgba(110, 48, 48, 0.28));
+        }
+
+        .tear-right-half {
+            filter: drop-shadow(-4px 0px 14px rgba(110, 48, 48, 0.28));
+        }
+
+        /* Underneath peek-through page styling */
+        #under-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #fffbf8 0%, #f8ede3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        /* Center vertical crack line element */
+        #crack-line-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body class="relative w-screen h-screen overflow-hidden bg-[#f7dcdb] flex items-center justify-center">
+
+    <!-- UNDERNEATH LAYER (Revealed directly under the torn paper) -->
+    <div id="under-canvas">
+        <div class="text-center px-6">
+            <span class="text-xs uppercase tracking-[0.35em] text-[#b3817f] block mb-3 font-light">Opening Next Chapter</span>
+            <h2 class="serif-font text-3xl sm:text-5xl italic font-normal text-[#6f4b4c] opacity-90">Welcome...</h2>
+            <div class="w-12 h-[1px] bg-[#d9a5a3] mx-auto mt-4"></div>
+        </div>
+    </div>
+
+    <!-- TEARING SVG WRAPPER -->
+    <div id="tear-container" class="absolute inset-0 z-20 pointer-events-auto">
+        <!-- SVG Definitions for Clip Paths -->
+        <svg class="absolute w-0 h-0" aria-hidden="true" focusable="false">
+            <defs>
+                <clipPath id="clip-left" clipPathUnits="objectBoundingBox">
+                    <path id="path-left" d="M 0,0 L 0.5,0 L 0.5,1 L 0,1 Z"></path>
+                </clipPath>
+                <clipPath id="clip-right" clipPathUnits="objectBoundingBox">
+                    <path id="path-right" d="M 0.5,0 L 1,0 L 1,1 L 0.5,1 Z"></path>
+                </clipPath>
+            </defs>
+        </svg>
+
+        <!-- Crack appearance overlay before ripping -->
+        <svg id="crack-line-svg" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+            <path id="crack-path" d="" fill="none" stroke="#682928" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" opacity="0.85" filter="drop-shadow(0 0 1px rgba(0,0,0,0.4))" />
+        </svg>
+
+        <!-- LEFT HALF -->
+        <div id="half-left" class="paper-layer luxury-gradient tear-left-half" style="clip-path: url(#clip-left); -webkit-clip-path: url(#clip-left);">
+            <div class="paper-grain"></div>
+        </div>
+
+        <!-- RIGHT HALF -->
+        <div id="half-right" class="paper-layer luxury-gradient tear-right-half" style="clip-path: url(#clip-right); -webkit-clip-path: url(#clip-right);">
+            <div class="paper-grain"></div>
+        </div>
+
+        <!-- MAIN FRONT CONTENT OVERLAY (Clips together with paper) -->
+        <div id="main-content" class="absolute inset-0 flex flex-col justify-between items-center py-12 px-6 z-30 select-none">
+            <!-- Top Spacing Anchor -->
+            <div class="w-full h-8"></div>
+
+            <!-- Central Hero Section -->
+            <main class="flex flex-col items-center justify-center text-center -mt-6">
+                <!-- Small Intro Line -->
+                <p class="text-[#884e4c] tracking-[0.28em] text-xs sm:text-sm uppercase font-light mb-2 opacity-85">
+                    A little something for you
+                </p>
+
+                <!-- Elegant Shree Serif Title -->
+                <h1 class="serif-font text-6xl sm:text-8xl md:text-9xl text-[#582e2e] font-normal tracking-wide leading-none my-4 sm:my-6 drop-shadow-sm">
+                    Shree
+                </h1>
+
+                <!-- Circular Glass-like Button with Upward/Right Arrow -->
+                <button 
+                    id="open-btn" 
+                    type="button" 
+                    aria-label="Proceed to next page" 
+                    class="glass-btn mt-6 sm:mt-8 w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center group focus:outline-none focus:ring-2 focus:ring-[#ba6f6d]/40"
+                >
+                    <svg class="w-6 h-6 sm:w-7 sm:h-7 text-[#582e2e] transform transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" 
+                         viewBox="0 0 24 24" 
+                         fill="none" 
+                         stroke="currentColor" 
+                         stroke-width="1.7" 
+                         stroke-linecap="round" 
+                         stroke-linejoin="round">
+                        <line x1="7" y1="17" x2="17" y2="7"></line>
+                        <polyline points="7 7 17 7 17 17"></polyline>
+                    </svg>
+                </button>
+            </main>
+
+            <!-- Bottom Subtitle / Prompt -->
+            <footer class="text-center pb-2">
+                <span class="text-[#965a58] text-[11px] sm:text-xs tracking-[0.24em] uppercase font-light opacity-75">
+                    tap to begin
+                </span>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        class PaperSoundSynthesizer {
+            constructor() {
+                this.ctx = null;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContextClass();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playRip() {
+                try {
+                    this.init();
+                    const now = this.ctx.currentTime;
+                    const duration = 0.85;
+
+                    // Generate burst of white/pink noise for tearing fibers
+                    const bufferSize = this.ctx.sampleRate * duration;
+                    const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                    const output = noiseBuffer.getChannelData(0);
+
+                    let lastOut = 0.0;
+                    for (let i = 0; i < bufferSize; i++) {
+                        // Pink noise filter approximation + harsh rips
+                        const white = Math.random() * 2 - 1;
+                        lastOut = (lastOut * 0.94) + (white * 0.08);
+                        // Add irregular sudden jagged friction spikes typical of tearing paper
+                        const jaggedSpike = Math.random() > 0.985 ? (Math.random() - 0.5) * 0.9 : 0;
+                        output[i] = lastOut + jaggedSpike;
+                    }
+
+                    const noiseSource = this.ctx.createBufferSource();
+                    noiseSource.buffer = noiseBuffer;
+
+                    // Bandpass filter to match the crisp scrape of high-fiber parchment
+                    const filter = this.ctx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.setValueAtTime(1100, now);
+                    filter.frequency.exponentialRampToValueAtTime(3200, now + 0.18);
+                    filter.frequency.exponentialRampToValueAtTime(700, now + duration);
+                    filter.Q.value = 2.0;
+
+                    // Crackling resonance filter
+                    const highpass = this.ctx.createBiquadFilter();
+                    highpass.type = 'highpass';
+                    highpass.frequency.setValueAtTime(380, now);
+
+                    // Dynamic volume envelope: sharp onset crack, rough mid rip, gentle drop
+                    const gainNode = this.ctx.createGain();
+                    gainNode.gain.setValueAtTime(0.001, now);
+                    gainNode.gain.linearRampToValueAtTime(0.48, now + 0.06);
+                    gainNode.gain.setValueAtTime(0.45, now + 0.22);
+                    gainNode.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+                    noiseSource.connect(filter);
+                    filter.connect(highpass);
+                    highpass.connect(gainNode);
+                    gainNode.connect(this.ctx.destination);
+
+                    noiseSource.start(now);
+                    noiseSource.stop(now + duration);
+                } catch (e) {
+                    console.warn("Audio synthesis was skipped or blocked by browser policy:", e);
+                }
+            }
+        }
+
+        const soundFX = new PaperSoundSynthesizer();
+
+        function generateTearPoints() {
+            // Generate jagged tear coordinates running from y=0 to y=1000
+            const steps = 42;
+            const points = [];
+            const center = 500; // viewBox width is 1000
+            
+            points.push({ x: center, y: 0 });
+
+            let curX = center;
+            for (let i = 1; i < steps; i++) {
+                const y = (1000 / steps) * i;
+                // High frequency irregular tear offset with natural fiber wobble
+                const deviation = (Math.random() - 0.5) * 36;
+                const jitter = (Math.random() - 0.5) * 14;
+                curX = center + deviation + jitter;
+                points.push({ x: curX, y: y });
+            }
+
+            points.push({ x: center + (Math.random() - 0.5) * 20, y: 1000 });
+            return points;
+        }
+
+        // Build SVG paths for the left and right paper clips
+        function buildPaperClipPaths(points) {
+            // Left Half Path: (0,0) -> across top to first tear point -> down tear line -> to (0, 1000) -> close
+            let leftD = `M 0,0 L ${points[0].x / 1000},0 `;
+            for (let i = 0; i < points.length; i++) {
+                const nx = (points[i].x / 1000).toFixed(4);
+                const ny = (points[i].y / 1000).toFixed(4);
+                leftD += `L ${nx},${ny} `;
+            }
+            leftD += `L 0,1 Z`;
+
+            // Right Half Path: from (1,0) -> to first tear point -> down tear line -> to (1, 1000) -> close
+            let rightD = `M 1,0 L ${points[0].x / 1000},0 `;
+            for (let i = 0; i < points.length; i++) {
+                const nx = (points[i].x / 1000).toFixed(4);
+                const ny = (points[i].y / 1000).toFixed(4);
+                rightD += `L ${nx},${ny} `;
+            }
+            rightD += `L 1,1 Z`;
+
+            return { leftD, rightD };
+        }
+
+        const openBtn = document.getElementById('open-btn');
+        const crackLineSvg = document.getElementById('crack-line-svg');
+        const crackPath = document.getElementById('crack-path');
+        const pathLeft = document.getElementById('path-left');
+        const pathRight = document.getElementById('path-right');
+        const halfLeft = document.getElementById('half-left');
+        const halfRight = document.getElementById('half-right');
+        const mainContent = document.getElementById('main-content');
+
+        let isTriggered = false;
+
+        async function triggerPaperRipping() {
+            if (isTriggered) return;
+            isTriggered = true;
+
+            // 1. Audio pre-warm on user gesture
+            soundFX.init();
+
+            // 2. Button quick compression animation (down to 90% and back)
+            openBtn.classList.add('btn-compress');
+
+            // 3. Wait for compression to complete (~220ms) then pause for ~100ms
+            await new Promise(r => setTimeout(r, 260));
+
+            // Generate procedural torn paths
+            const tearPoints = generateTearPoints();
+            const { leftD, rightD } = buildPaperClipPaths(tearPoints);
+
+            // Construct crack path string for center stroke
+            let crackD = `M ${tearPoints[0].x},${tearPoints[0].y} `;
+            for (let i = 1; i < tearPoints.length; i++) {
+                crackD += `L ${tearPoints[i].x},${tearPoints[i].y} `;
+            }
+            crackPath.setAttribute('d', crackD);
+
+            // 4. Center crack flashes and rapidly shoots from center to edges
+            crackLineSvg.style.opacity = '1';
+            const pathLength = crackPath.getTotalLength();
+            crackPath.style.strokeDasharray = pathLength;
+            crackPath.style.strokeDashoffset = pathLength;
+
+            // Trigger paper-ripping audio exactly as the tear forms
+            soundFX.playRip();
+
+            // Animate the crack rapidly vertically (around 160ms)
+            crackPath.style.transition = 'stroke-dashoffset 0.16s cubic-bezier(0.1, 0.9, 0.2, 1)';
+            crackPath.style.strokeDashoffset = '0';
+
+            await new Promise(r => setTimeout(r, 160));
+
+            // 5. Apply clip paths to left and right layers
+            pathLeft.setAttribute('d', leftD);
+            pathRight.setAttribute('d', rightD);
+
+            // Hide the single crack stroke as tearing halves separate
+            crackLineSvg.style.display = 'none';
+
+            // Fade content quickly as paper pulls apart
+            mainContent.style.transition = 'opacity 0.25s ease-out, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
+            mainContent.style.opacity = '0';
+            mainContent.style.transform = 'scale(0.97)';
+
+            // 6. Tear halves pull apart horizontally with slight organic rotation and curl
+            const tearDuration = 800; // ms
+            const easeOutQuart = 'cubic-bezier(0.16, 1, 0.3, 1)';
+
+            halfLeft.style.transition = `transform ${tearDuration}ms ${easeOutQuart}, opacity ${tearDuration}ms ease-in`;
+            halfRight.style.transition = `transform ${tearDuration}ms ${easeOutQuart}, opacity ${tearDuration}ms ease-in`;
+
+            // Dynamic translate + tilt for physical paper sensation
+            halfLeft.style.transform = 'translate3d(-105%, 0, 0) rotate(-4.2deg)';
+            halfRight.style.transform = 'translate3d(105%, 0, 0) rotate(4.2deg)';
+
+            // 7. Transition wraps up in ~1 second total, then redirects to page2.html
+            setTimeout(() => {
+                window.location.href = "page2.html";
+            }, 920);
+        }
+
+        // Attach user interaction listeners
+        openBtn.addEventListener('click', triggerPaperRipping);
+        openBtn.addEventListener('touchstart', (e) => {
+            // Pre-initialize audio context on touchstart for low-latency playback
+            soundFX.init();
+        }, { passive: true });
+    </script>
+</body>
+</html>

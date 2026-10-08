@@ -1,0 +1,836 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find The Birthday Key | Page 3</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --bg-deep: #1e0914;
+            --bg-mauve: #341424;
+            --bg-rose: #521f35;
+            --accent-gold: #fde08b;
+            --accent-rose: #f7aab7;
+            --text-glow: rgba(254, 226, 230, 0.95);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-deep);
+            color: #f7dede;
+        }
+
+        .serif-font {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+        }
+
+        /* Rich playful rose-quartz & twilight gradient */
+        .ambient-bloom-gradient {
+            background: radial-gradient(circle at 50% 45%, #5a2039 0%, #3a1325 50%, #1a0711 100%);
+        }
+
+        /* Ambient subtle center glow */
+        .ambient-glow-core {
+            position: absolute;
+            width: 70vw;
+            height: 70vw;
+            max-width: 580px;
+            max-height: 580px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(235, 140, 165, 0.16) 0%, rgba(130, 48, 75, 0.08) 55%, transparent 75%);
+            filter: blur(50px);
+            pointer-events: none;
+            animation: slowPulse 9s ease-in-out infinite alternate;
+        }
+
+        @keyframes slowPulse {
+            0% { transform: scale(0.92); opacity: 0.6; }
+            100% { transform: scale(1.1); opacity: 0.95; }
+        }
+
+        /* Floating interactive object card */
+        .floating-item {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+            will-change: transform, opacity;
+            touch-action: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 225, 0.22);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 
+                0 10px 25px rgba(10, 2, 8, 0.4),
+                inset 0 1px 4px rgba(255, 255, 255, 0.25);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .floating-item:hover {
+                background: rgba(255, 255, 255, 0.12);
+                border-color: rgba(255, 230, 240, 0.6);
+                box-shadow: 
+                    0 15px 35px rgba(20, 4, 15, 0.6),
+                    0 0 18px rgba(247, 170, 183, 0.35),
+                    inset 0 1px 6px rgba(255, 255, 255, 0.4);
+            }
+        }
+
+        /* Wrong guess animation */
+        .wrong-shake {
+            animation: wrongJitter 0.42s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        @keyframes wrongJitter {
+            10%, 90% { transform: translate3d(-3px, 0, 0) scale(0.96); opacity: 0.55; }
+            20%, 80% { transform: translate3d(4px, 0, 0) scale(0.96); opacity: 0.55; }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0) scale(0.98); opacity: 0.7; }
+            40%, 60% { transform: translate3d(3px, 0, 0) scale(0.98); opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Success Shockwave Rings */
+        .shockwave-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid rgba(253, 224, 139, 0.9);
+            box-shadow: 0 0 25px rgba(247, 170, 183, 0.8), inset 0 0 15px rgba(253, 224, 139, 0.6);
+            pointer-events: none;
+            opacity: 0;
+            will-change: transform, opacity;
+        }
+
+        .ring-burst {
+            animation: ringExpand 0.75s cubic-bezier(0.12, 0.8, 0.25, 1) forwards;
+        }
+
+        @keyframes ringExpand {
+            0% {
+                transform: scale(0.2);
+                opacity: 1;
+            }
+            80% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(4.5);
+                opacity: 0;
+            }
+        }
+
+        /* Screen Camera Shake */
+        .screen-rumble {
+            animation: rumble 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        @keyframes rumble {
+            0% { transform: translate(0, 0); }
+            20% { transform: translate(-4px, 3px) rotate(-0.5deg); }
+            40% { transform: translate(4px, -3px) rotate(0.4deg); }
+            60% { transform: translate(-3px, 2px) rotate(-0.2deg); }
+            80% { transform: translate(3px, 1px) rotate(0.1deg); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* Screen White/Pink Flash Overlay */
+        #flash-overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, #ffffff 10%, #ffd6e0 50%, #ff8ea3 100%);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1000;
+            mix-blend-mode: screen;
+            will-change: opacity;
+        }
+
+        .flash-active {
+            animation: flashPop 0.18s ease-out forwards;
+        }
+
+        @keyframes flashPop {
+            0% { opacity: 0; }
+            40% { opacity: 1; }
+            100% { opacity: 0.95; }
+        }
+
+        /* Decoy response toast */
+        #hint-toast {
+            transition: opacity 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transform: translateY(6px);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #hint-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="relative w-screen h-screen overflow-hidden ambient-bloom-gradient flex flex-col justify-between">
+
+    <div class="ambient-glow-core top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"></div>
+    <canvas id="fx-canvas" class="absolute inset-0 z-40 pointer-events-none"></canvas>
+    <div id="flash-overlay"></div>
+
+    <!-- MAIN UI WRAPPER -->
+    <div id="game-stage" class="relative z-10 w-full h-full flex flex-col justify-between items-center py-8 sm:py-12 px-6 select-none">
+        
+        <!-- HEADER TEXT CHOREOGRAPHY -->
+        <header id="header-block" class="flex flex-col items-center text-center space-y-2 mt-2 transition-opacity duration-500">
+            <span class="text-xs sm:text-sm tracking-[0.3em] uppercase text-[#e5a6b1] font-light">
+                Okay. One tiny challenge.
+            </span>
+            <h1 class="serif-font text-3xl sm:text-5xl md:text-6xl font-normal text-[#fff0f2] italic tracking-wide">
+                Find the birthday key.
+            </h1>
+        </header>
+
+        <!-- GAME INTERACTIVE BOUNDING CONTAINER -->
+        <main id="playfield" class="relative w-full max-w-4xl h-[62vh] my-auto overflow-hidden">
+            <!-- Floating items will be dynamically managed in JS with 60fps RAF transforms -->
+        </main>
+
+        <!-- FOOTER / GENTLE HINT TOAST -->
+        <footer class="h-10 flex items-center justify-center text-center pb-2">
+            <div id="hint-toast" class="bg-black/30 backdrop-blur-md px-5 py-1.5 rounded-full border border-pink-400/20 shadow-md">
+                <span id="hint-text" class="text-xs sm:text-sm tracking-wider text-[#ffd5dc] font-light">
+                    Nice try.
+                </span>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        class SoundFXSynthesizer {
+            constructor() {
+                this.ctx = null;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContextClass();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playSoftTick() {
+                try {
+                    this.init();
+                    const now = this.ctx.currentTime;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(320, now);
+                    osc.frequency.exponentialRampToValueAtTime(140, now + 0.08);
+
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } catch(e) {}
+            }
+
+            playChimeSuccess() {
+                try {
+                    this.init();
+                    const now = this.ctx.currentTime;
+                    // Arpeggiated celestial bell chord (D5, F#5, A5, D6)
+                    const notes = [587.33, 739.99, 880.00, 1174.66];
+                    notes.forEach((freq, idx) => {
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+
+                        const startT = now + idx * 0.07;
+                        gain.gain.setValueAtTime(0.001, startT);
+                        gain.gain.linearRampToValueAtTime(0.28, startT + 0.03);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, startT + 1.2);
+
+                        osc.connect(gain);
+                        gain.connect(this.ctx.destination);
+
+                        osc.start(startT);
+                        osc.stop(startT + 1.2);
+                    });
+                } catch(e) {}
+            }
+
+            playImpactBoom() {
+                try {
+                    this.init();
+                    const now = this.ctx.currentTime;
+                    const duration = 1.3;
+
+                    // 1. Deep sub-frequency rumble
+                    const subOsc = this.ctx.createOscillator();
+                    const subGain = this.ctx.createGain();
+
+                    subOsc.type = 'sine';
+                    subOsc.frequency.setValueAtTime(130, now);
+                    subOsc.frequency.exponentialRampToValueAtTime(30, now + 0.6);
+
+                    subGain.gain.setValueAtTime(0.85, now);
+                    subGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+                    subOsc.connect(subGain);
+                    subGain.connect(this.ctx.destination);
+
+                    subOsc.start(now);
+                    subOsc.stop(now + duration);
+
+                    // 2. High impact burst noise
+                    const bufferSize = this.ctx.sampleRate * 0.45;
+                    const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                    const output = noiseBuffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) {
+                        output[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.2));
+                    }
+
+                    const noiseSource = this.ctx.createBufferSource();
+                    noiseSource.buffer = noiseBuffer;
+
+                    const noiseFilter = this.ctx.createBiquadFilter();
+                    noiseFilter.type = 'lowpass';
+                    noiseFilter.frequency.setValueAtTime(1800, now);
+                    noiseFilter.frequency.exponentialRampToValueAtTime(120, now + 0.45);
+
+                    const noiseGain = this.ctx.createGain();
+                    noiseGain.gain.setValueAtTime(0.65, now);
+                    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+                    noiseSource.connect(noiseFilter);
+                    noiseFilter.connect(noiseGain);
+                    noiseGain.connect(this.ctx.destination);
+
+                    noiseSource.start(now);
+                    noiseSource.stop(now + 0.45);
+                } catch(e) {}
+            }
+        }
+
+        const sound = new SoundFXSynthesizer();
+    </script>
+
+    <script>
+        // High Performance 2D Canvas Particle Engine for the Grand Explosion
+        const canvas = document.getElementById('fx-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = window.innerWidth;
+        let height = window.innerHeight;
+        let particles = [];
+        let isExploding = false;
+
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class SparkParticle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 16 + 4;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+                this.friction = 0.955;
+                this.size = Math.random() * 4.5 + 2;
+                this.alpha = 1;
+                this.decay = Math.random() * 0.018 + 0.012;
+                // Palette: Sparkling champagne gold, bright white, hot rose
+                const colors = ['#ffffff', '#fff2c2', '#fde08b', '#ff94b1', '#ff5c8a'];
+                this.color = colors[Math.floor(Math.random() * colors.length)];
+            }
+
+            update() {
+                this.vx *= this.friction;
+                this.vy *= this.friction;
+                this.x += this.vx;
+                this.y += this.vy;
+                this.alpha -= this.decay;
+            }
+
+            draw() {
+                if (this.alpha <= 0) return;
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.alpha);
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 8;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function triggerGrandExplosion(originX, originY) {
+            isExploding = true;
+            particles = [];
+            // Produce 260 rich glowing particles
+            for (let i = 0; i < 260; i++) {
+                particles.push(new SparkParticle(originX, originY));
+            }
+
+            function runParticleLoop() {
+                ctx.clearRect(0, 0, width, height);
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].update();
+                    particles[i].draw();
+                }
+                particles = particles.filter(p => p.alpha > 0);
+
+                if (particles.length > 0) {
+                    requestAnimationFrame(runParticleLoop);
+                }
+            }
+            requestAnimationFrame(runParticleLoop);
+        }
+    </script>
+
+    <script>
+        // Item definitions: 6 total items (1 true key, 5 graceful decoys)
+        const ITEM_CONFIGS = [
+            {
+                id: 'key',
+                isKey: true,
+                title: 'Golden Birthday Key',
+                size: 78,
+                svg: `
+<svg
+    viewBox="0 0 48 48"
+    class="w-10 h-10 sm:w-11 sm:h-11 drop-shadow-[0_0_14px_rgba(253,224,139,0.7)]"
+    fill="none"
+    stroke="#fde08b"
+    stroke-width="1.7"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+>
+    <!-- Left Wing -->
+    <path
+        d="
+        M23 23
+        C20 16 14 10 8 11
+        C6 17 8 23 14 27
+        C17 29 20 27 23 25
+        Z
+        "
+        fill="rgba(253,224,139,0.14)"
+    />
+
+    <!-- Right Wing -->
+    <path
+        d="
+        M25 23
+        C28 16 34 10 40 11
+        C42 17 40 23 34 27
+        C31 29 28 27 25 25
+        Z
+        "
+        fill="rgba(253,224,139,0.14)"
+    />
+
+    <!-- Lower Left Wing -->
+    <path
+        d="
+        M22.5 26
+        C18 26 13 29 13 34
+        C17 36 21 34 24 29
+        Z
+        "
+        fill="rgba(253,224,139,0.10)"
+    />
+
+    <!-- Lower Right Wing -->
+    <path
+        d="
+        M25.5 26
+        C30 26 35 29 35 34
+        C31 36 27 34 24 29
+        Z
+        "
+        fill="rgba(253,224,139,0.10)"
+    />
+
+    <!-- Body -->
+    <path
+        d="
+        M24 19
+        C22.2 21.5 22.2 26.5 24 30
+        C25.8 26.5 25.8 21.5 24 19
+        Z
+        "
+        fill="#fde08b"
+        fill-opacity="0.9"
+    />
+
+    <!-- Antennae -->
+    <path
+        d="M23 20 C21 17 19 16 17 16"
+    />
+
+    <path
+        d="M25 20 C27 17 29 16 31 16"
+    />
+
+    <!-- Small Golden Sparkles -->
+    <path
+        d="M9 7 L9.7 9 L11.7 9.7 L9.7 10.4 L9 12.4 L8.3 10.4 L6.3 9.7 L8.3 9 Z"
+        fill="#fde08b"
+        stroke="none"
+    />
+
+    <path
+        d="M39 34 L39.6 35.7 L41.3 36.3 L39.6 36.9 L39 38.6 L38.4 36.9 L36.7 36.3 L38.4 35.7 Z"
+        fill="#fde08b"
+        stroke="none"
+    />
+</svg>
+                    <svg viewBox="0 0 48 48" class="w-9 h-9 sm:w-10 sm:h-10" fill="none" stroke="#f7aab7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="24,4 30,17 44,19 34,29 36,43 24,36 12,43 14,29 4,19 18,17" fill="rgba(247,170,183,0.14)" />
+                        <circle cx="24" cy="24" r="3.5" fill="#f7aab7" />
+                    </svg>
+                `
+            },
+            {
+                id: 'decoy-crystal',
+                isKey: false,
+                title: 'Rose Quartz Gem',
+                size: 70,
+                svg: `
+                    <svg viewBox="0 0 48 48" class="w-9 h-9 sm:w-10 sm:h-10" fill="none" stroke="#f3b4cf" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="12,14 36,14 44,24 24,42 4,24" fill="rgba(243,180,207,0.12)" />
+                        <line x1="4" y1="24" x2="44" y2="24" />
+                        <line x1="12" y1="14" x2="24" y2="42" />
+                        <line x1="36" y1="14" x2="24" y2="42" />
+                    </svg>
+                `
+            },
+            {
+                id: 'decoy-rose',
+                isKey: false,
+                title: 'Blossom Charm',
+                size: 70,
+                svg: `
+                    <svg viewBox="0 0 48 48" class="w-9 h-9 sm:w-10 sm:h-10" fill="none" stroke="#ff9ebd" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="24" cy="24" r="8" fill="rgba(255,158,189,0.18)" />
+                        <path d="M24 16C20 10 12 14 16 20C8 20 8 30 16 30C12 36 20 40 24 34C28 40 36 36 32 30C40 30 40 20 32 20C36 14 28 10 24 16Z" />
+                        <circle cx="24" cy="24" r="3" fill="#ff9ebd" />
+                    </svg>
+                `
+            },
+            {
+                id: 'decoy-compass',
+                isKey: false,
+                title: 'Sun Dial',
+                size: 72,
+                svg: `
+                    <svg viewBox="0 0 48 48" class="w-9 h-9 sm:w-10 sm:h-10" fill="none" stroke="#ecc3cf" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="24" cy="24" r="18" fill="rgba(236,195,207,0.08)" />
+                        <circle cx="24" cy="24" r="12" stroke-dasharray="2 3" />
+                        <polygon points="24,10 27,24 24,21 21,24" fill="#ecc3cf" />
+                        <polygon points="24,38 27,24 24,27 21,24" fill="#a45870" />
+                    </svg>
+                `
+            },
+            {
+                id: 'decoy-envelope',
+                isKey: false,
+                title: 'Folded Note',
+                size: 72,
+                svg: `
+                    <svg viewBox="0 0 48 48" class="w-9 h-9 sm:w-10 sm:h-10" fill="none" stroke="#e0a0b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="6" y="10" width="36" height="28" rx="4" fill="rgba(224,160,184,0.1)" />
+                        <path d="M6 12L24 26L42 12" />
+                        <path d="M6 36L18 24" />
+                        <path d="M42 36L30 24" />
+                    </svg>
+                `
+            }
+        ];
+
+        const playfield = document.getElementById('playfield');
+        const hintToast = document.getElementById('hint-toast');
+        const hintText = document.getElementById('hint-text');
+        const headerBlock = document.getElementById('header-block');
+        const flashOverlay = document.getElementById('flash-overlay');
+        const gameStage = document.getElementById('game-stage');
+
+        const wrongHints = [
+            "Nice try.",
+            "Not that one.",
+            "Close, but keep looking 🌸",
+            "That's just a decoy!",
+            "Almost..."
+        ];
+        let hintTimeout = null;
+
+        function showDecoyHint() {
+            const randomMsg = wrongHints[Math.floor(Math.random() * wrongHints.length)];
+            hintText.textContent = randomMsg;
+            hintToast.classList.add('show');
+            clearTimeout(hintTimeout);
+            hintTimeout = setTimeout(() => {
+                hintToast.classList.remove('show');
+            }, 1800);
+        }
+
+        // Object instance representation with jitter-free vectorized math
+        class FloatingEntity {
+            constructor(config, bounds) {
+                this.config = config;
+                this.size = config.size;
+                this.bounds = bounds;
+
+                // Random non-overlapping distribution initial coordinates
+                this.x = Math.random() * (bounds.width - this.size);
+                this.y = Math.random() * (bounds.height - this.size);
+
+                // Movement physics parameters (unique per item: some spin, some drift horizontal)
+                this.vx = (Math.random() * 0.8 + 0.3) * (Math.random() > 0.5 ? 1 : -1);
+                this.vy = (Math.random() * 0.7 + 0.25) * (Math.random() > 0.5 ? 1 : -1);
+                
+                // Rotational physics
+                this.rotation = Math.random() * 360;
+                this.vRot = (Math.random() * 0.45 + 0.15) * (Math.random() > 0.5 ? 1 : -1);
+
+                // Wave bobbing parameters
+                this.wavePhase = Math.random() * Math.PI * 2;
+                this.waveSpeed = Math.random() * 0.02 + 0.015;
+                this.waveAmplitude = Math.random() * 0.8 + 0.4;
+
+                this.isFrozen = false;
+                this.element = this.createElement();
+            }
+
+            createElement() {
+                const el = document.createElement('div');
+                el.className = 'floating-item';
+                el.style.width = `${this.size}px`;
+                el.style.height = `${this.size}px`;
+                el.setAttribute('aria-label', this.config.title);
+                el.innerHTML = this.config.svg;
+
+                // Bind touch & click interactions
+                el.addEventListener('click', (e) => this.handleClick(e));
+                el.addEventListener('touchstart', (e) => {
+                    sound.init(); // Pre-warm audio context
+                }, { passive: true });
+
+                playfield.appendChild(el);
+                return el;
+            }
+
+            update(bounds) {
+                if (this.isFrozen) return;
+
+                this.bounds = bounds;
+                this.wavePhase += this.waveSpeed;
+
+                // Apply velocity + undulating wave
+                this.x += this.vx;
+                this.y += this.vy + Math.sin(this.wavePhase) * this.waveAmplitude;
+                this.rotation += this.vRot;
+
+                // Bounce off soft playfield boundaries
+                if (this.x <= 4) {
+                    this.x = 4;
+                    this.vx = Math.abs(this.vx);
+                } else if (this.x >= bounds.width - this.size - 4) {
+                    this.x = bounds.width - this.size - 4;
+                    this.vx = -Math.abs(this.vx);
+                }
+
+                if (this.y <= 4) {
+                    this.y = 4;
+                    this.vy = Math.abs(this.vy);
+                } else if (this.y >= bounds.height - this.size - 4) {
+                    this.y = bounds.height - this.size - 4;
+                    this.vy = -Math.abs(this.vy);
+                }
+
+                // Render with GPU transform3d (Lag-free, no reflow)
+                this.element.style.transform = `translate3d(${this.x}px, ${this.y}px, 0px) rotate(${this.rotation}deg)`;
+            }
+
+            handleClick(e) {
+                if (gameResolved) return;
+                sound.init();
+
+                if (this.config.isKey) {
+                    handleKeyFound(this);
+                } else {
+                    handleWrongItem(this);
+                }
+            }
+        }
+
+        // Initialize entities
+        let entities = [];
+        let gameResolved = false;
+
+        function initFloatingItems() {
+            playfield.innerHTML = '';
+            const rect = playfield.getBoundingClientRect();
+            entities = ITEM_CONFIGS.map(cfg => new FloatingEntity(cfg, rect));
+        }
+
+        // High-fps Physics RAF Loop
+        function animatePhysics() {
+            if (!gameResolved) {
+                const rect = playfield.getBoundingClientRect();
+                for (let i = 0; i < entities.length; i++) {
+                    entities[i].update(rect);
+                }
+            }
+            requestAnimationFrame(animatePhysics);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initFloatingItems();
+            animatePhysics();
+        });
+
+        // Window resize responsive positioning adjustment
+        window.addEventListener('resize', () => {
+            const rect = playfield.getBoundingClientRect();
+            entities.forEach(item => {
+                if (item.x > rect.width - item.size) item.x = rect.width - item.size - 10;
+                if (item.y > rect.height - item.size) item.y = rect.height - item.size - 10;
+            });
+        });
+    </script>
+
+    <script>
+        function handleWrongItem(entity) {
+            sound.playSoftTick();
+            entity.element.classList.remove('wrong-shake');
+            // Trigger reflow to restart shake animation reliably
+            void entity.element.offsetWidth;
+            entity.element.classList.add('wrong-shake');
+            showDecoyHint();
+        }
+
+        function handleKeyFound(keyEntity) {
+            gameResolved = true;
+
+            // 1. Freeze key and all other decoys
+            entities.forEach(e => {
+                e.isFrozen = true;
+                if (e !== keyEntity) {
+                    // Decoys gently dissolve away
+                    e.element.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+                    e.element.style.opacity = '0';
+                    e.element.style.transform += ' scale(0.6)';
+                }
+            });
+
+            // 2. Key intensifies glow
+            keyEntity.element.style.transition = 'all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            keyEntity.element.style.background = 'rgba(253, 224, 139, 0.28)';
+            keyEntity.element.style.borderColor = 'rgba(255, 255, 255, 0.95)';
+            keyEntity.element.style.boxShadow = '0 0 50px 15px rgba(253, 224, 139, 0.85), inset 0 0 20px #fff';
+            keyEntity.element.style.transform = `translate3d(${keyEntity.x}px, ${keyEntity.y}px, 0px) scale(1.3) rotate(${keyEntity.rotation}deg)`;
+
+            // 3. Expanding Ring Shockwave
+            const ring = document.createElement('div');
+            ring.className = 'shockwave-ring ring-burst';
+            ring.style.width = `${keyEntity.size}px`;
+            ring.style.height = `${keyEntity.size}px`;
+            ring.style.left = `${keyEntity.x}px`;
+            ring.style.top = `${keyEntity.y}px`;
+            playfield.appendChild(ring);
+
+            // 4. Play harmonic celestial chime
+            sound.playChimeSuccess();
+
+            // 5. Hide Game UI cleanly
+            headerBlock.style.opacity = '0';
+            hintToast.style.opacity = '0';
+
+            // Get Key Center coordinates for the upcoming particle explosion
+            const keyRect = keyEntity.element.getBoundingClientRect();
+            const centerX = keyRect.left + keyRect.width / 2;
+            const centerY = keyRect.top + keyRect.height / 2;
+
+            // 6. After the ring and chime flourish, entire screen becomes COMPLETELY STILL for ~280ms
+            setTimeout(() => {
+                // Key vanishes as stillness descends
+                keyEntity.element.style.opacity = '0';
+                ring.remove();
+
+                // Intentional quiet suspension pause (280ms)
+                setTimeout(() => {
+                    executeGrandImpact(centerX, centerY);
+                }, 280);
+
+            }, 550);
+        }
+
+        function executeGrandImpact(originX, originY) {
+            // FLASH -> IMPACT -> BOOM
+
+            // 1. Play boom sound at exact impact moment
+            sound.playImpactBoom();
+
+            // 2. Screen shakes
+            document.body.classList.add('screen-rumble');
+
+            // 3. Bright pink/white flash (roughly 120ms)
+            flashOverlay.classList.add('flash-active');
+
+            // 4. Hundreds of glowing particles burst outward
+            triggerGrandExplosion(originX, originY);
+
+            // 5. Fade out page 3 stage behind the blast
+            gameStage.style.transition = 'opacity 0.2s ease';
+            gameStage.style.opacity = '0';
+
+            // 6. Seamless redirect to Page 4 as the blast clears
+            setTimeout(() => {
+                window.location.href = "page4.html";
+            }, 950);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,450 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>There's A Little More | Page 2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --bg-deep-plum: #1c0910;
+            --bg-burgundy: #2e111a;
+            --bg-rose-shadow: #3b1723;
+            --accent-glow: #e0939c;
+            --text-primary: #f6dede;
+            --text-secondary: #c99ea4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-deep-plum);
+            color: var(--text-primary);
+        }
+
+        .serif-font {
+            font-family: 'Cormorant Garamond', Georgia, serif;
+        }
+
+        .ambient-deep-gradient {
+            background: radial-gradient(circle at 50% 50%, #3e1724 0%, #2a0e18 45%, #18060d 85%, #100308 100%);
+        }
+
+        /* Central soft breathing ambient glow */
+        .center-ambient-glow {
+            position: absolute;
+            width: 65vw;
+            height: 65vw;
+            max-width: 520px;
+            max-height: 520px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(209, 131, 142, 0.12) 0%, rgba(138, 59, 74, 0.05) 50%, transparent 72%);
+            filter: blur(40px);
+            pointer-events: none;
+            animation: slowAura 8s ease-in-out infinite alternate;
+        }
+
+        @keyframes slowAura {
+            0% {
+                transform: scale(0.95);
+                opacity: 0.65;
+            }
+            100% {
+                transform: scale(1.08);
+                opacity: 0.95;
+            }
+        }
+
+        /* Subtle, tasteful upward drift and opacity fadeIn */
+        .anim-fade-up {
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: opacity, transform;
+        }
+
+        .anim-fade-up.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .continue-btn {
+            background: rgba(255, 235, 238, 0.04);
+            border: 1px solid rgba(224, 147, 156, 0.28);
+            color: #ebd2d5;
+            letter-spacing: 0.24em;
+            box-shadow: 
+                0 10px 30px rgba(10, 2, 5, 0.5),
+                0 0 20px rgba(224, 147, 156, 0.08) inset;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        @media (hover: hover) and (pointer: fine) {
+            .continue-btn:hover {
+                background: rgba(255, 235, 238, 0.09);
+                border-color: rgba(235, 172, 179, 0.55);
+                color: #ffffff;
+                box-shadow: 
+                    0 12px 35px rgba(20, 4, 10, 0.7),
+                    0 0 25px rgba(224, 147, 156, 0.18) inset;
+                transform: translateY(-2px);
+            }
+        }
+
+        .continue-btn:active {
+            transform: scale(0.94);
+        }
+
+        /* Subtle button inner sheen */
+        .continue-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -120%;
+            width: 80%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+            transform: skewX(-20deg);
+            transition: left 0.75s ease;
+        }
+
+        .continue-btn:hover::after {
+            left: 140%;
+        }
+
+        #scene-wrapper {
+            transition: transform 0.85s cubic-bezier(0.2, 0.9, 0.3, 1),
+                        filter 0.85s cubic-bezier(0.2, 0.9, 0.3, 1),
+                        opacity 0.85s cubic-bezier(0.3, 0.8, 0.3, 1);
+            will-change: transform, filter, opacity;
+        }
+
+        /* Camera pull-away state */
+        .scene-pullback {
+            transform: scale(0.92) !important;
+            filter: blur(6px) brightness(0.65) !important;
+            opacity: 0.55 !important;
+        }
+
+        /* Expanding Portal Overlay */
+        #portal-container {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        #portal-circle {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 50%, #fffbf6 0%, #f7dfd6 28%, #d99a9a 58%, #783547 88%, #2d0f19 100%);
+            box-shadow: 
+                0 0 35px 12px rgba(247, 223, 214, 0.85),
+                0 0 80px 30px rgba(217, 154, 154, 0.6);
+            opacity: 0;
+            transform: scale(0.2);
+            will-change: transform, opacity;
+        }
+
+        /* Active portal surge animation */
+        .portal-surge {
+            animation: portalExpand 0.9s cubic-bezier(0.22, 0.85, 0.28, 1) forwards;
+        }
+
+        @keyframes portalExpand {
+            0% {
+                opacity: 0;
+                transform: scale(0.2);
+            }
+            15% {
+                opacity: 1;
+                transform: scale(1.6);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(260); /* Covers entire 4K display from center */
+            }
+        }
+    </style>
+</head>
+<body class="relative w-screen h-screen overflow-hidden ambient-deep-gradient flex items-center justify-center">
+
+    <canvas id="particle-canvas" class="absolute inset-0 z-0 pointer-events-none"></canvas>
+
+    <div class="center-ambient-glow z-1"></div>
+
+    <div id="scene-wrapper" class="relative z-10 w-full h-full flex flex-col items-center justify-center px-6">
+        
+        <!-- Text Group with Staggered Visual Flow -->
+        <div class="flex flex-col items-center justify-center text-center max-w-xl mx-auto space-y-6">
+            
+            <!-- First Line -->
+            <p id="line-1" class="anim-fade-up text-sm sm:text-base tracking-[0.24em] uppercase text-[#cb9ea6] font-light">
+                You really thought that was it?
+            </p>
+
+            <!-- Second Line -->
+            <h2 id="line-2" class="anim-fade-up serif-font text-3xl sm:text-5xl md:text-6xl font-normal text-[#fbeeee] italic tracking-wide">
+                There’s a little more.
+            </h2>
+
+            <!-- Third Element: Continue Button -->
+            <div id="btn-container" class="anim-fade-up pt-4 sm:pt-6">
+                <button 
+                    id="continue-btn" 
+                    type="button" 
+                    class="continue-btn text-xs sm:text-sm font-light px-9 py-3.5 rounded-full cursor-pointer uppercase transition-transform active:scale-90"
+                >
+                    Continue
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="portal-container">
+        <div id="portal-circle"></div>
+    </div>
+
+    <script>
+        class CinematicAudioSynthesizer {
+            constructor() {
+                this.ctx = null;
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContextClass();
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            playWhoosh() {
+                try {
+                    this.init();
+                    const now = this.ctx.currentTime;
+                    const duration = 0.95;
+
+                    // 1. Noise buffer for smooth air rush
+                    const bufferSize = this.ctx.sampleRate * duration;
+                    const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                    const output = noiseBuffer.getChannelData(0);
+
+                    let b0 = 0, b1 = 0, b2 = 0;
+                    for (let i = 0; i < bufferSize; i++) {
+                        const white = Math.random() * 2 - 1;
+                        // Pink noise approximation for a deep, silky air texture
+                        b0 = 0.997 * b0 + white * 0.05;
+                        b1 = 0.985 * b1 + white * 0.07;
+                        b2 = 0.950 * b2 + white * 0.15;
+                        output[i] = (b0 + b1 + b2) * 0.45;
+                    }
+
+                    const noiseSource = this.ctx.createBufferSource();
+                    noiseSource.buffer = noiseBuffer;
+
+                    // Dynamic Resonant Sweeping Bandpass Filter
+                    const filter = this.ctx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.Q.value = 1.4;
+                    filter.frequency.setValueAtTime(140, now);
+                    filter.frequency.exponentialRampToValueAtTime(1300, now + 0.48);
+                    filter.frequency.exponentialRampToValueAtTime(260, now + duration);
+
+                    // Master Noise Gain
+                    const noiseGain = this.ctx.createGain();
+                    noiseGain.gain.setValueAtTime(0.0001, now);
+                    noiseGain.gain.linearRampToValueAtTime(0.38, now + 0.4);
+                    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+                    noiseSource.connect(filter);
+                    filter.connect(noiseGain);
+                    noiseGain.connect(this.ctx.destination);
+
+                    noiseSource.start(now);
+                    noiseSource.stop(now + duration);
+
+                    // 2. Deep Sub-bass frequency swell (creates weight as the portal blooms)
+                    const subOsc = this.ctx.createOscillator();
+                    subOsc.type = 'sine';
+                    subOsc.frequency.setValueAtTime(46, now);
+                    subOsc.frequency.exponentialRampToValueAtTime(74, now + 0.35);
+                    subOsc.frequency.exponentialRampToValueAtTime(32, now + duration);
+
+                    const subGain = this.ctx.createGain();
+                    subGain.gain.setValueAtTime(0.001, now);
+                    subGain.gain.linearRampToValueAtTime(0.32, now + 0.3);
+                    subGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+                    subOsc.connect(subGain);
+                    subGain.connect(this.ctx.destination);
+
+                    subOsc.start(now);
+                    subOsc.stop(now + duration);
+
+                } catch (e) {
+                    console.warn("Audio synthesis was skipped or blocked by browser policy:", e);
+                }
+            }
+        }
+
+        const audioSynth = new CinematicAudioSynthesizer();
+
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = 0;
+        let height = 0;
+        let particles = [];
+        const PARTICLE_COUNT = 18; // Very few particles to maintain serene elegance
+
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+
+        class DustParticle {
+            constructor() {
+                this.reset(true);
+            }
+
+            reset(initial = false) {
+                this.x = Math.random() * width;
+                this.y = initial ? Math.random() * height : height + 10;
+                this.size = Math.random() * 1.5 + 0.8;
+                this.vy = -(Math.random() * 0.18 + 0.08); // Slow drifting upward
+                this.vx = (Math.random() - 0.5) * 0.12;
+                this.alpha = 0;
+                this.maxAlpha = Math.random() * 0.22 + 0.08; // Very low opacity
+                this.pulseSpeed = Math.random() * 0.012 + 0.006;
+                this.phase = Math.random() * Math.PI * 2;
+            }
+
+            update() {
+                this.y += this.vy;
+                this.x += this.vx;
+                this.phase += this.pulseSpeed;
+                this.alpha = (Math.sin(this.phase) * 0.5 + 0.5) * this.maxAlpha;
+
+                if (this.y < -10 || this.x < -10 || this.x > width + 10) {
+                    this.reset(false);
+                }
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(240, 185, 192, ${this.alpha})`;
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            resizeCanvas();
+            particles = [];
+            for (let i = 0; i < PARTICLE_COUNT; i++) {
+                particles.push(new DustParticle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < particles.length; i++) {
+                particles[i].update();
+                particles[i].draw();
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        const line1 = document.getElementById('line-1');
+        const line2 = document.getElementById('line-2');
+        const btnContainer = document.getElementById('btn-container');
+        const continueBtn = document.getElementById('continue-btn');
+        const sceneWrapper = document.getElementById('scene-wrapper');
+        const portalCircle = document.getElementById('portal-circle');
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initParticles();
+            animateParticles();
+
+            // 1. Initial line fades in calmly after a gentle breath
+            setTimeout(() => {
+                line1.classList.add('is-visible');
+            }, 300);
+
+            // 2. Second line appears 450ms after
+            setTimeout(() => {
+                line2.classList.add('is-visible');
+            }, 820);
+
+            // 3. Simple continue button gracefully fades in
+            setTimeout(() => {
+                btnContainer.classList.add('is-visible');
+            }, 1350);
+        });
+
+        let isTransitioning = false;
+
+        function triggerPortalTransition() {
+            if (isTransitioning) return;
+            isTransitioning = true;
+
+            // Pre-warm audio on gesture
+            audioSynth.init();
+
+            // 1. Button shrinks slightly
+            continueBtn.style.transform = 'scale(0.92)';
+            continueBtn.style.pointerEvents = 'none';
+
+            // 2. Audio whoosh plays in sync
+            audioSynth.playWhoosh();
+
+            // 3. Camera pulls back: entire scene scales to ~92%, blurs, and darkens
+            sceneWrapper.classList.add('scene-pullback');
+
+            // 4. Portal appears at center and expands rapidly
+            setTimeout(() => {
+                portalCircle.classList.add('portal-surge');
+            }, 60);
+
+            // 5. Seamless redirect to page3.html as the portal sweeps the viewport
+            setTimeout(() => {
+                window.location.href = "page3.html";
+            }, 900);
+        }
+
+        continueBtn.addEventListener('click', triggerPortalTransition);
+        continueBtn.addEventListener('touchstart', () => {
+            audioSynth.init();
+        }, { passive: true });
+    </script>
+</body>
+</html>

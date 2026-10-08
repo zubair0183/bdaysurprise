@@ -1,0 +1,724 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Shree | The Letter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Montserrat:wght@200;300;400;500&family=Pinyon+Script&family=Caveat:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --parchment-cream: #fbf7ee;
+            --parchment-warm: #f5eedf;
+            --parchment-deep: #ebdfc8;
+            --ink-charcoal: #2c2523;
+            --ink-soft: #4a3e3b;
+            --ink-muted: #786864;
+            --seal-crimson: #8c1e39;
+            --seal-light: #bf3358;
+            --accent-gold: #c89d56;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            width: 100%;
+            min-height: 100%;
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            background-color: #200816;
+            color: var(--ink-charcoal);
+            overflow-x: hidden;
+            transition: background-color 1.4s cubic-bezier(0.2, 0.8, 0.25, 1);
+        }
+
+        /* Ambient transition into warm cream paper environment */
+        body.stage-reading {
+            background-color: #f7f1e5;
+        }
+
+        .sans-subtle {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .script-calligraphy {
+            font-family: 'Pinyon Script', cursive, serif;
+        }
+
+        .script-hand {
+            font-family: 'Caveat', cursive, sans-serif;
+        }
+
+        .paper-grain-texture {
+            background-color: var(--parchment-cream);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.75) 0%, transparent 70%),
+                radial-gradient(circle at 100% 100%, rgba(210, 190, 165, 0.25) 0%, transparent 60%),
+                url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+        }
+
+        /* 3D Envelope Container */
+        .envelope-stage {
+            perspective: 1200px;
+            transform-style: preserve-3d;
+            transition: transform 0.9s cubic-bezier(0.2, 0.8, 0.25, 1), opacity 0.8s ease;
+        }
+
+        .envelope-box {
+            position: relative;
+            width: 320px;
+            height: 210px;
+            background: linear-gradient(135deg, #f6e6e8 0%, #ecd0d6 60%, #e2bcc4 100%);
+            border-radius: 12px;
+            box-shadow: 
+                0 22px 55px rgba(20, 3, 14, 0.45),
+                0 0 25px rgba(247, 180, 195, 0.25),
+                inset 0 1px 3px rgba(255, 255, 255, 0.8);
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.25, 1), box-shadow 0.7s ease;
+        }
+
+        @media (min-width: 640px) {
+            .envelope-box {
+                width: 380px;
+                height: 245px;
+            }
+        }
+
+        /* Top Fold Flap */
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-origin: top center;
+            transform-style: preserve-3d;
+            transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1), z-index 0.4s ease;
+            z-index: 30;
+        }
+
+        .envelope-flap-polygon {
+            width: 100%;
+            height: 65%;
+            background: linear-gradient(180deg, #edd2d7 0%, #e2bcc4 100%);
+            clip-path: polygon(0 0, 100% 0, 50% 100%);
+            filter: drop-shadow(0 4px 6px rgba(45, 8, 24, 0.22));
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        /* Pocket Front Flaps */
+        .envelope-pocket {
+            position: absolute;
+            inset: 0;
+            z-index: 20;
+            pointer-events: none;
+        }
+
+        .pocket-left {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, #e7c2ca 0%, #dfb5be 100%);
+            clip-path: polygon(0 0, 0 100%, 55% 55%);
+            border-bottom-left-radius: 12px;
+            border-top-left-radius: 12px;
+            opacity: 0.95;
+        }
+
+        .pocket-right {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(-90deg, #e7c2ca 0%, #dfb5be 100%);
+            clip-path: polygon(100% 0, 100% 100%, 45% 55%);
+            border-bottom-right-radius: 12px;
+            border-top-right-radius: 12px;
+            opacity: 0.95;
+        }
+
+        .pocket-bottom {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(0deg, #dec0c7 0%, #ebccd3 100%);
+            clip-path: polygon(0 100%, 100% 100%, 50% 48%);
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+            box-shadow: 0 -2px 8px rgba(90, 20, 40, 0.1);
+        }
+
+        /* Wax Seal */
+        .envelope-seal {
+            position: absolute;
+            top: 56%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 35%, var(--seal-light) 0%, var(--seal-crimson) 65%, #4f0a1b 100%);
+            box-shadow: 
+                0 6px 14px rgba(45, 5, 18, 0.55),
+                0 1px 3px rgba(255, 185, 200, 0.6) inset;
+            z-index: 40;
+            cursor: pointer;
+            transition: transform 0.3s ease, filter 0.3s ease, opacity 0.4s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .envelope-seal:hover {
+            transform: translate(-50%, -50%) scale(1.08);
+            filter: brightness(1.08);
+        }
+
+        /* Animation Stage 1: Envelope lifts */
+        .stage-lift {
+            transform: translateY(-24px) scale(1.03);
+            box-shadow: 
+                0 32px 75px rgba(20, 3, 14, 0.6),
+                0 0 35px rgba(247, 180, 195, 0.35);
+        }
+
+        /* Animation Stage 2: Flap flips 180deg backward */
+        .stage-open-flap {
+            transform: rotateX(180deg);
+            z-index: 5 !important;
+        }
+
+        /* Paper sheet inside envelope that slides upward */
+        #inner-paper-sheet {
+            position: absolute;
+            left: 50%;
+            bottom: 12px;
+            transform: translateX(-50%) translateY(0);
+            width: 88%;
+            height: 85%;
+            background: var(--parchment-cream);
+            border-radius: 6px;
+            box-shadow: 0 4px 15px rgba(35, 10, 20, 0.15);
+            z-index: 10;
+            transition: transform 0.85s cubic-bezier(0.2, 0.9, 0.25, 1), 
+                        opacity 0.6s ease,
+                        width 0.85s cubic-bezier(0.2, 0.9, 0.25, 1);
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        /* Stage 3 & 4: Paper slides upward clearing envelope mouth */
+        .paper-slid-up {
+            transform: translateX(-50%) translateY(-145%) !important;
+            z-index: 50 !important;
+            box-shadow: 0 16px 38px rgba(30, 8, 20, 0.28) !important;
+        }
+
+        #letter-view-container {
+            opacity: 0;
+            transform: scale(0.92) translateY(20px);
+            pointer-events: none;
+            transition: opacity 1.1s cubic-bezier(0.2, 0.8, 0.25, 1), transform 1.1s cubic-bezier(0.2, 0.8, 0.25, 1);
+        }
+
+        #letter-view-container.letter-active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            pointer-events: auto;
+        }
+
+        .letter-parchment-card {
+            background-color: var(--parchment-cream);
+            border: 1px solid rgba(220, 205, 185, 0.65);
+            box-shadow: 
+                0 18px 50px rgba(70, 50, 40, 0.12),
+                0 4px 16px rgba(70, 50, 40, 0.06),
+                0 0 0 1px rgba(255, 255, 255, 0.7) inset;
+        }
+
+        /* Paragraph sequential fade up */
+        .letter-para {
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1), transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+            will-change: opacity, transform;
+        }
+
+        .letter-para.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Delicate line divider */
+        .filigree-divider {
+            background: linear-gradient(90deg, transparent, rgba(160, 130, 110, 0.35), transparent);
+        }
+
+        /* Beating signature heart icon */
+        .drawn-heart-icon {
+            opacity: 0;
+            transform: scale(0.4);
+            transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+
+        .drawn-heart-icon.show-heart {
+            opacity: 1;
+            transform: scale(1);
+            animation: softHeartPulse 3.4s ease-in-out infinite alternate;
+        }
+
+        @keyframes softHeartPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+            100% { transform: scale(1); }
+        }
+
+        /* Custom graceful scrollbar for lengthy reading */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(180, 160, 145, 0.4);
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="relative flex flex-col items-center justify-start min-h-screen py-6 sm:py-12 px-4 select-text">
+
+    <div id="ambient-backdrop" class="fixed inset-0 pointer-events-none transition-opacity duration-1000 z-0">
+        <div class="absolute inset-0 bg-gradient-to-b from-[#2a0b1c]/80 via-[#1a0512] to-[#12030d] opacity-100 transition-opacity duration-1000" id="dark-bg-layer"></div>
+    </div>
+
+    <!-- AUDIO CONTROLS (Quiet, unobtrusive toggle in top corner) -->
+    <aside class="fixed top-4 right-4 sm:top-6 sm:right-6 z-50">
+        <button 
+            id="audio-toggle-btn"
+            type="button"
+            aria-label="Toggle serene background melody"
+            class="px-3.5 py-1.5 rounded-full text-[11px] sans-subtle uppercase tracking-[0.2em] font-light bg-black/20 hover:bg-black/30 backdrop-blur-md border border-white/20 text-[#eae0d5] transition-all flex items-center gap-2 cursor-pointer shadow-sm"
+        >
+            <span id="audio-icon" class="text-xs">♪</span>
+            <span id="audio-label">Music</span>
+        </button>
+    </aside>
+
+    <!-- INITIAL ENVELOPE STAGE (Lifts, flap opens, paper slides out) -->
+    <div id="envelope-viewport" class="fixed inset-0 z-30 flex flex-col items-center justify-center p-4">
+        
+        <div id="envelope-wrapper" class="envelope-stage">
+            
+            <div id="envelope-element" class="envelope-box flex items-center justify-center">
+                
+                <!-- Inner Paper Sheet (slides up out of envelope pocket) -->
+                <div id="inner-paper-sheet" class="paper-grain-texture p-4 flex flex-col justify-start">
+                    <div class="w-16 h-1.5 bg-[#dfd2be] rounded-full mb-3 opacity-60"></div>
+                    <div class="w-24 h-1 bg-[#dfd2be] rounded-full mb-2 opacity-50"></div>
+                    <div class="w-20 h-1 bg-[#dfd2be] rounded-full opacity-40"></div>
+                </div>
+
+                <!-- Envelope Back Fold / Shadow Lining -->
+                <div class="absolute inset-0 rounded-xl bg-[#cfa6b0] opacity-30 pointer-events-none"></div>
+
+                <!-- Flap that swings 180° backward -->
+                <div id="envelope-flap-node" class="envelope-flap">
+                    <div class="envelope-flap-polygon"></div>
+                </div>
+
+                <!-- Envelope Pocket Front Plates -->
+                <div class="envelope-pocket">
+                    <div class="pocket-left"></div>
+                    <div class="pocket-right"></div>
+                    <div class="pocket-bottom"></div>
+                </div>
+
+                <!-- Calligraphy "For you." on Front Lower Edge -->
+                <div class="absolute bottom-3 left-4 z-20 pointer-events-none">
+                    <span class="script-calligraphy text-lg sm:text-xl text-[#822a44]/75">
+                        For you.
+                    </span>
+                </div>
+
+                <!-- Interactive Wax Seal -->
+                <div 
+                    id="wax-seal-btn" 
+                    class="envelope-seal"
+                    role="button"
+                    tabindex="0"
+                    aria-label="Open the letter"
+                >
+                    <svg viewBox="0 0 24 24" class="w-4 h-4 text-[#ffdce5]" fill="currentColor">
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                    </svg>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Gentle Open Prompt beneath envelope -->
+        <div id="open-prompt" class="mt-8 flex flex-col items-center text-center transition-opacity duration-500">
+            <button 
+                id="open-action-btn"
+                type="button"
+                class="px-8 py-2.5 rounded-full text-xs uppercase tracking-[0.3em] font-light sans-subtle bg-white/10 hover:bg-white/20 border border-white/30 text-[#fff0f2] transition-all cursor-pointer backdrop-blur-md active:scale-95"
+            >
+                Tap to Open
+            </button>
+            <span class="text-[11px] sans-subtle uppercase tracking-[0.2em] text-[#dca6b4]/70 font-light mt-2.5">
+                take your time
+            </span>
+        </div>
+
+    </div>
+
+    <!-- MAIN LETTER VIEW CONTAINER (Revealed as paper becomes Page 5 surface) -->
+    <main id="letter-view-container" class="relative z-20 w-full max-w-2xl my-auto flex flex-col items-center">
+        
+        <article class="letter-parchment-card paper-grain-texture w-full rounded-2xl p-7 sm:p-12 md:p-14 transition-all duration-700">
+            
+            <!-- Letter Header: Delicate Date & Botanical Ornament -->
+            <header class="flex flex-col items-center text-center mb-8 sm:mb-10">
+                <span class="sans-subtle text-[11px] uppercase tracking-[0.35em] text-[#917d77] font-light">
+                    A Note For Shree
+                </span>
+                <div class="w-16 h-[1px] filigree-divider my-3"></div>
+                <!-- Calligraphic Headline -->
+                <h1 class="script-calligraphy text-4xl sm:text-5xl md:text-6xl text-[#3d1825] font-normal tracking-wide mt-1">
+                    Happy birthday, Shree.
+                </h1>
+            </header>
+
+            <!-- Letter Body Paragraphs (Fade in sequence) -->
+            <div id="letter-paragraphs" class="space-y-6 sm:space-y-7 text-base sm:text-lg md:text-[1.28rem] leading-[1.8] sm:leading-[1.95] text-[#3e322e] font-normal tracking-[0.015em]">
+                
+                <!-- Paragraph 1 -->
+                <p class="letter-para" data-delay="400">
+                    You knew when we met, it was just an accident. Who would have thought that it would lead to this? At first, you seemed to be busy, but no one can stop God’s decision. We were made to be friends, so we are.
+                </p>
+
+                <!-- Paragraph 2 -->
+                <p class="letter-para" data-delay="1100">
+                    I don’t know what you think about me, or how you see our friendship, but you will always be my bestest friend in my life. I’m genuinely glad that somehow, that random meeting happened and brought you into my life.
+                </p>
+
+                <!-- Paragraph 3 -->
+                <p class="letter-para" data-delay="1800">
+                    There have been so many small moments, conversations, laughs, and memories that I’ll always remember. Maybe at that time we never thought they would become this important, but somehow they did.
+                </p>
+
+                <!-- Paragraph 4 -->
+                <p class="letter-para" data-delay="2500">
+                    I just hope that no matter where life takes us, we always stay the same friends who can talk, laugh, annoy each other, and still be there when it actually matters.
+                </p>
+
+                <!-- Paragraph 5 -->
+                <p class="letter-para" data-delay="3200">
+                    You are someone I’m really grateful to have met, and I hope this friendship stays for a very, very long time.
+                </p>
+
+                <!-- Paragraph 6 (Closing Wish) -->
+                <div class="letter-para pt-2 border-t border-[#d8c8b4]/60" data-delay="3900">
+                    <p class="font-medium text-[#2d1b22]">
+                        Happy birthday once again, Shree.
+                    </p>
+                    <p class="text-[#5c4a45] mt-1.5 italic">
+                        Here’s to another year of your life, and hopefully many more memories for us to make together.
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Handwritten Signature Block -->
+            <footer class="mt-10 sm:mt-14 pt-4 flex flex-col items-end">
+                <div class="flex flex-col items-center">
+                    <span class="sans-subtle text-[11px] uppercase tracking-[0.25em] text-[#917d77] font-light mb-1">
+                        Always,
+                    </span>
+                    <!-- Signature Calligraphy -->
+                    <span class="script-hand text-3xl sm:text-4xl text-[#78233e] font-normal tracking-wide select-none">
+                        Your Best Friend
+                    </span>
+
+                    <!-- Tiny Hand-Drawn Heart -->
+                    <div id="heart-glyph" class="drawn-heart-icon mt-2 flex items-center justify-center">
+                        <svg viewBox="0 0 24 24" class="w-5 h-5 text-[#b23b5d] fill-current" stroke="none">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        </svg>
+                    </div>
+                </div>
+            </footer>
+
+        </article>
+
+        <!-- Elegant Return / Home Link -->
+        <nav class="my-10 text-center select-none" aria-label="Page navigation">
+            <a 
+                href="index.html" 
+                class="sans-subtle text-xs uppercase tracking-[0.28em] text-[#866e67] hover:text-[#3e322e] transition-colors font-light py-2 px-5 rounded-full border border-[#d6c4b2]/60 bg-white/40 hover:bg-white/70 shadow-sm"
+            >
+                ↻ From the Beginning
+            </a>
+        </nav>
+
+    </main>
+
+    <script>
+        class SereneAudioEngine {
+            constructor() {
+                this.ctx = null;
+                this.musicInterval = null;
+                this.isPlayingMusic = false;
+                this.masterGain = null;
+                // Pentatonic warm chime frequencies (G major peaceful scale)
+                this.scale = [392.00, 440.00, 493.88, 587.33, 659.25, 783.99, 880.00];
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContextClass();
+                    this.masterGain = this.ctx.createGain();
+                    this.masterGain.gain.setValueAtTime(0.35, this.ctx.currentTime);
+                    this.masterGain.connect(this.ctx.destination);
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            // Tactile wax break and paper rustle
+            playPaperOpeningSequence() {
+                try {
+                    this.init();
+                    const now = this.ctx.currentTime;
+
+                    // 1. Wax seal crack (gentle snap)
+                    const osc = this.ctx.createOscillator();
+                    const oscGain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(260, now);
+                    osc.frequency.exponentialRampToValueAtTime(80, now + 0.08);
+
+                    oscGain.gain.setValueAtTime(0.18, now);
+                    oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+                    osc.connect(oscGain);
+                    oscGain.connect(this.masterGain);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+
+                    // 2. Paper slide rustle (filtered soft noise)
+                    const duration = 0.9;
+                    const bufferSize = this.ctx.sampleRate * duration;
+                    const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                    const output = noiseBuffer.getChannelData(0);
+                    let lastOut = 0.0;
+                    for (let i = 0; i < bufferSize; i++) {
+                        const white = Math.random() * 2 - 1;
+                        lastOut = (lastOut * 0.95) + (white * 0.05);
+                        output[i] = lastOut;
+                    }
+
+                    const noise = this.ctx.createBufferSource();
+                    noise.buffer = noiseBuffer;
+
+                    const filter = this.ctx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.Q.value = 1.2;
+                    filter.frequency.setValueAtTime(800, now + 0.1);
+                    filter.frequency.linearRampToValueAtTime(1400, now + 0.5);
+                    filter.frequency.exponentialRampToValueAtTime(600, now + duration);
+
+                    const noiseGain = this.ctx.createGain();
+                    noiseGain.gain.setValueAtTime(0.001, now);
+                    noiseGain.gain.linearRampToValueAtTime(0.12, now + 0.25);
+                    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+                    noise.connect(filter);
+                    filter.connect(noiseGain);
+                    noiseGain.connect(this.masterGain);
+
+                    noise.start(now + 0.05);
+                    noise.stop(now + duration);
+                } catch (e) {}
+            }
+
+            // Quiet, peaceful music box bell
+            playSoftBell(freq) {
+                try {
+                    this.init();
+                    const now = this.ctx.currentTime;
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, now);
+
+                    // Very gentle attack and long, sweet decay
+                    gain.gain.setValueAtTime(0.0001, now);
+                    gain.gain.linearRampToValueAtTime(0.06, now + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, now + 2.4);
+
+                    osc.connect(gain);
+                    gain.connect(this.masterGain);
+
+                    osc.start(now);
+                    osc.stop(now + 2.4);
+                } catch (e) {}
+            }
+
+            // Start serene, slow acoustic sequence
+            startQuietMelody() {
+                if (this.isPlayingMusic) return;
+                this.isPlayingMusic = true;
+
+                let step = 0;
+                const pattern = [0, 2, 4, 3, 1, 4, 2, 5, 4, 2];
+
+                this.musicInterval = setInterval(() => {
+                    if (!this.isPlayingMusic) return;
+                    const noteIndex = pattern[step % pattern.length];
+                    const freq = this.scale[noteIndex];
+                    this.playSoftBell(freq);
+                    step++;
+                }, 1750);
+            }
+
+            stopQuietMelody() {
+                this.isPlayingMusic = false;
+                if (this.musicInterval) {
+                    clearInterval(this.musicInterval);
+                    this.musicInterval = null;
+                }
+            }
+
+            toggleMelody() {
+                if (this.isPlayingMusic) {
+                    this.stopQuietMelody();
+                    return false;
+                } else {
+                    this.init();
+                    this.startQuietMelody();
+                    return true;
+                }
+            }
+        }
+
+        const audio = new SereneAudioEngine();
+    </script>
+
+    <script>
+        const envelopeViewport = document.getElementById('envelope-viewport');
+        const envelopeElement = document.getElementById('envelope-element');
+        const envelopeFlapNode = document.getElementById('envelope-flap-node');
+        const innerPaperSheet = document.getElementById('inner-paper-sheet');
+        const waxSealBtn = document.getElementById('wax-seal-btn');
+        const openActionBtn = document.getElementById('open-action-btn');
+        const openPrompt = document.getElementById('open-prompt');
+        const letterViewContainer = document.getElementById('letter-view-container');
+        const darkBgLayer = document.getElementById('dark-bg-layer');
+        const letterParas = document.querySelectorAll('.letter-para');
+        const heartGlyph = document.getElementById('heart-glyph');
+        const audioToggleBtn = document.getElementById('audio-toggle-btn');
+        const audioLabel = document.getElementById('audio-label');
+
+        let isOpened = false;
+
+        function runEnvelopeOpeningSequence() {
+            if (isOpened) return;
+            isOpened = true;
+
+            // Warm up audio and play tactile paper slide sound
+            audio.init();
+            audio.playPaperOpeningSequence();
+
+            // Fade open prompt out
+            openPrompt.style.opacity = '0';
+            openPrompt.style.pointerEvents = 'none';
+
+            // STAGE 1: Envelope lifts slightly (0ms)
+            envelopeElement.classList.add('stage-lift');
+
+            // STAGE 2: Flap rotates open (350ms)
+            setTimeout(() => {
+                waxSealBtn.style.opacity = '0';
+                envelopeFlapNode.classList.add('stage-open-flap');
+            }, 350);
+
+            // STAGE 3 & 4: Paper slides upward and clears envelope (750ms)
+            setTimeout(() => {
+                innerPaperSheet.classList.add('paper-slid-up');
+            }, 750);
+
+            // STAGE 5: Paper expands toward viewer & transition to warm cream environment (1300ms)
+            setTimeout(() => {
+                // Background softens from dark berry to warm off-white cream
+                document.body.classList.add('stage-reading');
+                darkBgLayer.style.opacity = '0';
+
+                // Envelope smoothly fades downward
+                envelopeViewport.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                envelopeViewport.style.opacity = '0';
+                envelopeViewport.style.transform = 'scale(0.85) translateY(30px)';
+                envelopeViewport.style.pointerEvents = 'none';
+
+                // Main letter card expands into place
+                letterViewContainer.classList.add('letter-active');
+
+                // Start gentle, quiet music box chime accompaniment
+                audio.startQuietMelody();
+                audioLabel.textContent = "Music: On";
+
+                // Sequence the paragraphs reading experience
+                revealParagraphsSequentially();
+
+            }, 1400);
+
+            // Fully remove envelope DOM footprint after transition
+            setTimeout(() => {
+                envelopeViewport.style.display = 'none';
+            }, 2100);
+        }
+
+        // Paragraph-by-paragraph calm fade-up
+        function revealParagraphsSequentially() {
+            letterParas.forEach((para) => {
+                const delay = parseInt(para.getAttribute('data-delay') || '0', 10);
+                setTimeout(() => {
+                    para.classList.add('revealed');
+                }, delay);
+            });
+
+            // Hand-drawn heart symbol appears softly at the end
+            setTimeout(() => {
+                heartGlyph.classList.add('show-heart');
+            }, 4600);
+        }
+
+        // Event Listeners for opening
+        waxSealBtn.addEventListener('click', runEnvelopeOpeningSequence);
+        openActionBtn.addEventListener('click', runEnvelopeOpeningSequence);
+        waxSealBtn.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                runEnvelopeOpeningSequence();
+            }
+        });
+
+        // Audio Toggle
+        audioToggleBtn.addEventListener('click', () => {
+            const active = audio.toggleMelody();
+            audioLabel.textContent = active ? "Music: On" : "Music: Muted";
+        });
+    </script>
+</body>
+</html>
